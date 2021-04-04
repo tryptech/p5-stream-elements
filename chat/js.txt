@@ -1,0 +1,199 @@
+let totalMessages = 0, messagesLimit = 0, nickColor = "user";
+let animationIn = 'bounceIn';
+let animationOut = 'bounceOut';
+let hideAfter = 999;
+let hideCommands = "no";
+let ignoredUsers = [];
+let bgOffset = 8;
+let animationSpeed = 24.0;
+let frameTime = 1000/60;
+
+window.addEventListener('onEventReceived', function (obj) {
+    if (obj.detail.listener !== "message") return;
+    let data = obj.detail.event.data;
+    if ((data.text === '!purge') && (data['nick'].toLowerCase() === obj['detail']['event']['data']['channel'])) {
+      console.log('erase all');
+      $('.message-row').remove();
+    }
+    if (data.text.startsWith("!") && hideCommands === "yes") return;
+    if (ignoredUsers.indexOf(data.nick) !== -1) return;
+    let message = attachEmotes(data);
+    let badges = "", badge;
+    for (let i = 0; i < data.badges.length; i++) {
+        badge = data.badges[i];
+        badges += `<img alt="" src="${badge.url}" class="badge"> `;
+    }
+    let username = data.displayName;
+    if (nickColor === "user") {
+        const color = data.displayColor;
+        username = `<span style="color:${color}">${username}</span>`;
+    }
+    addEvent(username, badges, message, data.isAction);
+});
+
+window.addEventListener('onWidgetLoad', function (obj) {
+    const fieldData = obj.detail.fieldData;
+    animationIn = fieldData.animationIn;
+    animationOut = fieldData.animationOut;
+    hideAfter = fieldData.hideAfter;
+    messagesLimit = fieldData.messagesLimit;
+    nickColor = fieldData.nickColor;
+    hideCommands = fieldData.hideCommands;
+    ignoredUsers = fieldData.ignoredUsers.toLowerCase().replace(" ", "").split(",");
+});
+
+
+function attachEmotes(message) {
+    let text = message.text;
+    let data = message.emotes;
+    return text
+        .replace(
+            /([^\s]*)/gi,
+            function (m, key) {
+                let result = data.filter(emote => {
+                    return emote.name === key
+                });
+                if (typeof result[0] !== "undefined") {
+                    let url = result[0]['urls'][4];
+                    return `<img alt="" src="${url}" class="emote"/>`;
+                } else return key;
+
+            }
+        );
+}
+
+function addEvent(username, badges, message, isAction) {
+    totalMessages += 1;
+    let actionClass = "";
+    if (isAction) {
+        actionClass = "action";
+    }
+    const element = $.parseHTML(`
+    <div class="message-row" id="msg-${totalMessages}" style="z-index: 999;">
+		<div class="user-stuff">
+			${badges}
+        	<div class="user-box ${actionClass}">${username}</div>
+        	<div class="user-message">${message}</div>
+		</div>
+		<div class="svg-bg">
+			<svg id="${totalMessages}" preserveAspectRatio="none" viewBox="0 0 100 100">
+				<polygon id="bg-${totalMessages}" points = "4,8 4,92 96,92 96,8"></polygon>
+			</svg>
+		</div>
+    </div>`);
+  	
+    if (hideAfter !== 999) {
+        $(element).prependTo('.main-container').delay(hideAfter * 1000).queue(function () {
+            $(this).removeClass(animationIn).addClass(animationOut).delay(1000).queue(function () {
+                $(this).remove()
+            }).dequeue();
+        });
+    } else {
+        $(element).prependTo('.main-container').queue(randomizePoints(totalMessages, "bg-"+totalMessages.toString())).css('top',(0 - (bgOffset*1.5) - element[1].offsetHeight).toString() + "px");
+    }
+  	
+	moveDown(element);
+    if (totalMessages > messagesLimit) {
+        removeRow(totalMessages - messagesLimit);
+    }
+}
+
+function removeRow(id) {
+    if (!$(`#msg-${id}`).length) {
+        return;
+    }
+    if (animationOut !== "none" || !$(`#msg-${id}`).hasClass(animationOut)) {
+        if (hideAfter !== 999) {
+            $(`#msg-${id}`).dequeue();
+        } else {
+            $(`#msg-${id}`).addClass(animationOut).delay(1000).queue(function () {
+                $(this).remove().dequeue()
+            });
+
+        }
+        return;
+    }
+
+    $(`#msg-${id}`).animate({
+        height: 0,
+        opacity: 0
+    }, 'slow', function () {
+        $(`#msg-${id}`).remove();
+    });
+}
+
+function randomizePoints(id1, id2) {
+	var svgid = "#" + id1;
+  	var bg = $(svgid);
+  	var w = bg.width();
+  	var h = bg.height();
+  	var pointArray = [ [0, 0] , [0,h - bgOffset] , [w - bgOffset,h - bgOffset] , [w - bgOffset,0] ];
+  	var svgObject = document.getElementById(id1);
+  	var boxObject = document.getElementById(id2);
+  
+    svgObject.setAttributeNS(null,"viewBox", "0 0 " + w.toString() + " " + h.toString());
+	setTimeout(setPoints, frameTime, boxObject, [w,h], pointArray, temp = [ [0, 0], [0, 0], [0, 0], [0, 0] ], 0);
+
+}
+
+function setPoints(target, tProp, cArr, oArr, frame) {
+	var pointString = "";
+	if (frame >= animationSpeed) frame = 0;
+    if (frame == 0) {
+      	baseArray = [ [0, 0] , [0,tProp[1] - bgOffset] , [tProp[0] - bgOffset,tProp[1] - bgOffset] , [tProp[0] - bgOffset,0] ];
+      	
+        for (var a = 0; a < oArr.length; a++) {
+        	for (var b = 0; b < oArr[a].length; b++) {
+              	oArr[a][b] = baseArray[a][b] + Math.random()*8;
+            	oArr[a][b] = oArr[a][b] - cArr[a][b];
+              	oArr[a][b] = oArr[a][b]/parseInt(animationSpeed,10);
+            }
+        }
+    }
+  	
+  	for (var a = 0; a < cArr.length; a++) {
+    	pointString += (cArr[a][0] + oArr[a][0]).toString() + "," + (cArr[a][1] + oArr[a][1]).toString() + " ";
+    }
+  
+  	for (var a = 0; a < cArr.length; a++) {
+      	cArr[a][0] += oArr[a][0];
+    	cArr[a][1] += oArr[a][1];
+    }
+  	
+  	target.setAttributeNS(null,"points", pointString);
+
+    setTimeout(setPoints, frameTime, target, tProp, cArr, oArr, frame + 1);
+}
+
+function moveDown(target) {
+  var offS = target[1].offsetHeight;
+  var translateDown = anime({
+    targets: document.querySelectorAll(".message-row"),
+    top: {
+      value: function(el) {
+        return parseInt(el.style.top, 10) + offS;
+      }
+    },
+    left: {
+      value: function(el, i) {
+        return 8 + (24*(i%2));
+      }
+    },
+    'margin-right': {
+      value: function(el, i) {
+        
+        return 8 + (24*(1-(i%2)));
+      }
+  	},
+    'z-index': {
+      value: function(el) {
+        return parseInt(el.style.zIndex, 10) - 1;
+      }
+    },
+    duration: 500,
+    delay: 0,
+    offset: 0,
+    loop: false
+  });
+  translateDown.play();
+}

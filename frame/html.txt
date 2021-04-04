@@ -1,0 +1,7 @@
+<script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/2.0.2/anime.min.js"></script>
+<div class="svg-bg">
+	<svg id="bar-bg" preserveAspectRatio="none" viewBox="0 0 100 100">
+		<polygon id="bg-poly" points = "4,8 4,92 96,92 96,8"></polygon>
+      	<line id="train-line"><line>
+	</svg>
+</div>

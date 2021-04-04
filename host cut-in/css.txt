@@ -1,0 +1,21 @@
+body { margin: 0px; }
+
+#ref, #ref2 {
+ position: absolute;
+ left: -1280px;
+}
+
+#avatarref {
+  width: 300px;
+  height: 300px;
+  position:absolute;
+  left: -300px;
+}
+
+#cutaway {
+  	width: 1920px;
+  	height: 14040px;
+  	position: absolute;
+  	top: -5400px;
+  	left: 0;
+}

@@ -1,0 +1,6 @@
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<img id="ref" src="{{frame}}">
+<img id="ref2" src="{{mask}}">
+<canvas id="cutaway" width="1280" height="9360"></canvas>
+<img id="avatarref"/>
+<div class="main-container"></div>

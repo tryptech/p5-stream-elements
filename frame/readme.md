@@ -1,0 +1,8 @@
+- Install [StreamFX](https://github.com/Xaymar/obs-StreamFX/releases)
+- Set custom widget to whatever dimensions you want
+- Create a scene just for the frame
+- Add the frame scene to a separate webcam scene layers like so
+    - Frame Scene
+        - Add a Color Key filter for #000000 with similarity 380 and smoothness 1000
+    - Webcam
+- Add a Dynamic Mask filter to that whole scene with the frame scene as the source

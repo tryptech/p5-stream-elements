@@ -1,0 +1,88 @@
+var canvas = document.getElementById('cutaway');
+var ctx = canvas.getContext('2d');
+var vOffset = 720;
+var vertOffset = {{vertOffset}};
+var scale = 1080.0/720.0;
+var frames = 13;
+var framerate = {{framerate}};
+var holdframes = {{holdframes}};
+var avaURL = null; 
+var sheet = "{{frame}}";
+var sheetmask = "{{mask}}";
+
+var imgA = new Image();
+imgA.src = sheet;
+var imgB = new Image();
+imgB.src = sheetmask;
+var frametime = 1000/framerate;
+
+var imgMask = new Image();
+
+let userConfig = [
+    {
+        soundFile: "{{defaultSound}}",
+        volume: 100,
+        timeout: 10, //seconds for triggering combo (amount occurrences within timeout seconds)
+        cooldown: 1, //seconds
+    }
+  ];
+
+window.addEventListener('onEventReceived', function (obj) {
+  	if (!obj.detail.event) {
+    	return;
+    }
+    if (typeof obj.detail.event.itemId !== "undefined") {
+        obj.detail.listener = "redemption-latest"
+    }
+  	const listener = obj.detail.listener.split("-")[0];
+  	const event = obj.detail.event;
+  
+  	if (listener === 'raid') {
+    	triggerRaid(event.name);
+    }
+});
+
+function triggerRaid(username) {
+    let sound = userConfig[0];
+  	var avatar = new Image(); 
+    $("#cutaway").css('top', 1080+"px");
+  
+  	ctx.clearRect(0,0,1280,9360);
+
+    ctx.drawImage(imgB, 0, 0, 1280, 9360, 0, 0, 1280, 9360);
+  
+  	$.get( "https://decapi.me/twitch/avatar/"+username, function( data ) {
+    	avaURL = data;
+      	$('#avatarref').attr('src',data);
+      	avatar.src = avaURL;
+      	avatar.onload = function() {
+            ctx.globalCompositeOperation = 'source-atop';
+            ctx.fillStyle = "#CF0000";
+            ctx.fillRect(0, 0, 1280, 9360);
+            
+            for (var i = 4; i < 12; i++) {
+                ctx.drawImage(avatar, 0, 66 + {{vertOffset}}, 300, 168, 0, (i*vOffset) + 2, 1280, 717);
+            }
+            ctx.globalCompositeOperation = 'source-over';
+            ctx.drawImage(imgA, 0, 0, 1280, 9360, 0, 0, 1280, 9360);
+            step(1080);
+            
+            let audio = new Audio(sound.soundFile);
+                  		
+            audio.volume = sound.volume * .01;
+          	if (audio.paused || audio.ended)
+            	audio.play();
+        }
+    });
+};
+
+function step(offset) {
+    setTimeout(function() {
+        $("#cutaway").css('top', offset+"px");
+        if (offset < frames * -1080) {
+        } else {
+            step(offset-1080);
+        }
+    }, offset==-7560?frametime*holdframes:frametime);
+
+}

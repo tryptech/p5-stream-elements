@@ -1,0 +1,52 @@
+let bgOffset = 4,
+	frameTime = 1000/60,
+	animationSpeed = 18.0;
+
+window.addEventListener('onWidgetLoad', function (obj) {
+    randomizePoints("bar-bg","bg-poly");
+});
+
+function randomizePoints(id1, id2) {
+	var svgid = "#" + id1;
+  	var bg = $(svgid);
+  	var w = bg.width();
+  	var h = bg.height();
+  	var pointArray = [ [0, 0] , [0,h - bgOffset] , [w - bgOffset,h - bgOffset] , [w - bgOffset,0] ];
+  	var svgObject = document.getElementById(id1);
+  	var boxObject = document.getElementById(id2);
+  
+	var tOffset = Math.floor((Math.random() * 16) - 7);
+  
+    svgObject.setAttributeNS(null,"viewBox", "0 0 " + w.toString() + " " + h.toString());
+	setTimeout(setPoints, frameTime + tOffset, boxObject, [w,h], pointArray, temp = [ [0, 0], [0, 0], [0, 0], [0, 0] ], 0);
+}
+
+function setPoints(target, tProp, cArr, oArr, frame) {
+	var pointString = "";
+  	var tOffset = Math.floor((Math.random() * 16) - 7);
+	if (frame >= animationSpeed) frame = 0;
+    if (frame == 0) {
+      	baseArray = [ [0, 0] , [0,tProp[1] - bgOffset] , [tProp[0] - bgOffset,tProp[1] - bgOffset] , [tProp[0] - bgOffset,0] ];
+      	
+        for (var a = 0; a < oArr.length; a++) {
+        	for (var b = 0; b < oArr[a].length; b++) {
+              	oArr[a][b] = baseArray[a][b] + Math.random()*8;
+            	oArr[a][b] = oArr[a][b] - cArr[a][b];
+              	oArr[a][b] = oArr[a][b]/parseInt(animationSpeed,10);
+            }
+        }
+    }
+  	
+  	for (var a = 0; a < cArr.length; a++) {
+    	pointString += (cArr[a][0] + oArr[a][0]).toString() + "," + (cArr[a][1] + oArr[a][1]).toString() + " ";
+    }
+  
+  	for (var a = 0; a < cArr.length; a++) {
+      	cArr[a][0] += oArr[a][0];
+    	cArr[a][1] += oArr[a][1];
+    }
+  	
+  	target.setAttributeNS(null,"points", pointString);
+
+    setTimeout(setPoints, frameTime + tOffset, target, tProp, cArr, oArr, frame + 1);
+}

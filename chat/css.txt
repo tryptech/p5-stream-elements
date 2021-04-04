@@ -1,0 +1,105 @@
+@import url('https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css');
+@import url('https://fonts.googleapis.com/css?family={{fontName}}');
+body {
+	margin: 0; 
+}
+
+* {
+  font-family: {{fontName}}, sans-serif;
+    color: {{fontColor}};
+    font-weight: {{fontWeight}};
+}
+.main-container{
+    display: inline-flex;
+    flex-direction: column;
+    justify-content: flex-start;
+  	align-items: flex-start;
+    align-content: flex-start;
+    height: 100%;
+  	width: 100%;
+    margin-bottom:10px;
+    box-sizing: border-box;
+  	margin-left: 0px;
+  	position: relative;
+  	left: 0px;
+	-webkit-mask-image: -webkit-gradient(linear, left 95%, left 100%, from(rgba(0,0,0,1)), to(rgba(0,0,0,0)));
+}
+
+.message-row {
+    flex: 0 0 auto;
+  	margin-top: 16px;
+  	margin-right: 32px;
+  	left: 8px;
+  	position: absolute;
+}
+
+.user-stuff {
+  	color: white;
+  	padding: 18px;
+	line-height: 1.2em;
+  	vertical-align: baseline;
+  	word-wrap: break-word
+}
+
+.user-stuff * {
+	display: inline-flex;
+  	z-index: 900;
+}
+
+.badge{
+    display:inline;
+    height:{{fontSize}}px;
+}
+
+.user-box{
+    display:inline;
+    font-size:{{fontSize}}px;
+}
+
+.user-box:after{
+ 	content:": ";
+}
+
+.user-box > span{
+    font-size:{{fontSize}}px;
+}
+
+.user-message{
+    display:inline;
+    font-size:{{fontSize}}px;
+  	line-height: 1.3em;
+  	text-shadow: black 0 0 1px;
+}
+  
+.emote{
+  height:{{fontSize}}px;
+  	vertical-align: middle; 
+}
+
+.svg-bg {
+	position: absolute;
+  	top: 0;
+  	left: 0;
+  	width: 100%;
+  	height: 100%;
+  	z-index: -100;
+}
+
+.svg-bg svg {
+	position: absolute;
+  	left: 0;
+  	top: 0;
+  	width: 100%;
+  	height: 100%;
+}
+
+.svg-bg svg polygon{
+	fill: rgba(0,0,0,0.7);
+  	stroke: white;
+  	stroke-width: 4;
+  	transition: all 0.3s;
+}
+
+.action{
+    font-style: italic;
+}

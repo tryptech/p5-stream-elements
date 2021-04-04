@@ -1,0 +1,24 @@
+body { margin: 0px; }
+
+#ref, #ref2 {
+ position: absolute;
+ left: -1280px;
+}
+
+#avatarref {
+  width: 300px;
+  height: 300px;
+  position:absolute;
+  left: -300px;
+}
+
+#cutaway {
+  	width: 1920px;
+  	height: 14040px;
+  	position: absolute;
+  	top: -5400px;
+  	left: 0;
+	/*background: url('https://cdn.streamelements.com/uploads/d41b060c-d6ac-423d-b1ea-6b227ed3b053.png');
+	background-size: cover;
+  	background-position: 0px -4320px;*/
+}

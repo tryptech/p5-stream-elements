@@ -1,0 +1,30 @@
+{
+  	"frame": {
+      	"type": "image-input",
+      	"label": "sheet.png goes here"
+    },
+  	"mask": {
+      	"type": "image-input",
+      	"label": "mask.png goes here"
+    },
+    "defaultSound": {
+        "type": "sound-input",
+        "label": "Cut-In SFX",
+        "value": "twitch.tv/"
+    },
+  	"vertOffset": {
+    	"type": "number",
+      	"label": "Picture vertical offset",
+      	"value": -20
+    },
+    "framerate": {
+        "type": "number",
+        "label": "Frames per Second",
+        "value": 30
+    },
+    "holdframes": {
+        "type": "number",
+        "label": "Hold on Cut-In for X Frames",
+        "value": 20
+    }
+}

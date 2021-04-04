@@ -1,0 +1,35 @@
+{
+    "frame": {
+      	"type": "image-input",
+      	"label": "host.png goes here"
+    },
+  	"mask": {
+      	"type": "image-input",
+      	"label": "hostmask.png goes here"
+    },
+    "defaultSound": {
+        "type": "sound-input",
+        "label": "Cut-in sound effect",
+        "value": "twitch.tv/"
+    },
+	"vertOffset": {
+    	"type": "number",
+      	"label": "Picture vertical offset",
+      	"value": 0
+    },
+	"horiOffset": {
+    	"type": "number",
+      	"label": "Picture horizontal offset",
+      	"value": 0
+    },
+    "framerate": {
+        "type": "number",
+        "label": "Frames per Second",
+        "value": 30
+    },
+    "holdframes": {
+        "type": "number",
+        "label": "Hold Frames",
+        "value": 20
+    }
+}
